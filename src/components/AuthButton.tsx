@@ -37,9 +37,9 @@ export default function AuthButton() {
     );
   }
 
-  // If the user is NOT logged in, show a sign-in button.
+  // If the user is NOT logged in, show sign-in buttons.
   return (
-    <div>
+    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
       <p>You are not signed in.</p>
       <button
         onClick={() => signIn("microsoft-entra-id")}
@@ -54,6 +54,20 @@ export default function AuthButton() {
         }}
       >
         Sign in with Microsoft
+      </button>
+      <button
+        onClick={() => signIn("govauth")}
+        style={{
+          padding: "10px 20px",
+          backgroundColor: "#dc2626",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer",
+          fontSize: "16px",
+        }}
+      >
+        Sign in with GovAuth
       </button>
     </div>
   );
