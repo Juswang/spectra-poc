@@ -11,8 +11,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       issuer: "https://govauth.sandbox.gov.sg/api/auth",
       clientId: process.env.GOVAUTH_CLIENT_ID,
       clientSecret: process.env.GOVAUTH_CLIENT_SECRET,
+      client: {
+        id_token_signed_response_alg: "EdDSA",
+      },
+      authorization: {
+        params: { scope: "openid profile email" },
+      },
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        };
+      },
     },
   ],
+  debug: true,
   pages: { signIn: "/" },
   callbacks: {
     authorized: async ({ auth: session, request }) => {
