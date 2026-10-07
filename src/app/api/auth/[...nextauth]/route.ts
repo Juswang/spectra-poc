@@ -1,8 +1,9 @@
 import { handlers } from "@/auth";
+import { NextRequest } from "next/server";
 
 export const POST = handlers.POST;
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const url = new URL(request.url);
 
   // GovAuth doesn't include the "iss" parameter in its callback response,
@@ -12,7 +13,7 @@ export async function GET(request: Request) {
     !url.searchParams.has("iss")
   ) {
     url.searchParams.set("iss", "https://govauth.sandbox.gov.sg/api/auth");
-    return handlers.GET(new Request(url, request));
+    return handlers.GET(new NextRequest(url, request));
   }
 
   return handlers.GET(request);

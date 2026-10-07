@@ -13,6 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.GOVAUTH_CLIENT_SECRET,
       client: {
         id_token_signed_response_alg: "EdDSA",
+        token_endpoint_auth_method: "client_secret_post",
       },
       authorization: {
         params: { scope: "openid profile email" },
