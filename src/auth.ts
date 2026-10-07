@@ -28,7 +28,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     },
   ],
-  debug: true,
   pages: { signIn: "/" },
   callbacks: {
     authorized: async ({ auth: session, request }) => {
