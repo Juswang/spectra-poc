@@ -35,13 +35,22 @@ export default function HomePage() {
           Monitor the health and performance of your organization&apos;s services
           in real time. Powered by Databricks analytics.
         </p>
-        <button
-          onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/dashboard" })}
-          className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-medium
-                     hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
-        >
-          Sign In with Microsoft
-        </button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/dashboard" })}
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-medium
+                       hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+          >
+            Sign In with Microsoft
+          </button>
+          <button
+            onClick={() => signIn("govauth", { callbackUrl: "/dashboard" })}
+            className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg font-medium
+                       hover:bg-red-700 transition-colors shadow-lg hover:shadow-xl"
+          >
+            Sign In with GovAuth
+          </button>
+        </div>
       </div>
 
       {/* How It Works Section */}
