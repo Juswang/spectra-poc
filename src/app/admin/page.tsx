@@ -11,13 +11,10 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function AdminPage() {
   const { data: session } = useSession();
 
-  // Session loading
-  if (status === "loading") return <LoadingSpinner />;
 
   // Basic guard (replace with real role check)
   /*
