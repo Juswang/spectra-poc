@@ -25,6 +25,16 @@ export default function Navbar() {
                 Dashboard
               </Link>
             )}
+
+            {/* Show Admin link if the user logged in is admin */}
+            {session && (
+              <Link
+                href="/admin"
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                Admin
+              </Link>
+            )}
           </div>
 
           {/* Right side — User info and auth button */}
