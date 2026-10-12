@@ -11,14 +11,12 @@
 "use client";
 
 import { useSession } from "next-auth/react";
+import ErrorDisplay from "@/components/ErrorDisplay";
 
 export default function AdminPage() {
   const { data: session } = useSession();
 
-
-  // Basic guard (replace with real role check)
-  
-  const isAdmin = session?.user?.role === "admin";
+  const isAdmin = session?.user?.role === "ADMIN";
   if (!isAdmin) {
     return (
       <ErrorDisplay
