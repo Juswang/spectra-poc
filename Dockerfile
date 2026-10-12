@@ -25,14 +25,14 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/prisma/migrations ./prisma/migrations
+COPY --from=builder /app/scripts/migrate.mjs ./scripts/migrate.mjs
 
-# Install only prisma CLI and dotenv in the runner for migrate deploy
-RUN npm install prisma@6.19.3 dotenv@18
+# Install only the pg driver for the migration script
+RUN npm install pg
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
+CMD ["sh", "-c", "node scripts/migrate.mjs && node server.js"]
