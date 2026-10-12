@@ -19,16 +19,7 @@ import ErrorDisplay from "@/components/ErrorDisplay";
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
-  const {
-    users,
-    services,
-    loading,
-    error,
-    lastUpdated,
-    refresh,
-    updateUserRole,
-    toggleService,
-  }// = useAdminData();
+
 
   // Session loading
   if (status === "loading") return <LoadingSpinner />;
