@@ -113,6 +113,23 @@ async function seed() {
     }
   }
 
+  // Promote initial admin user by email
+  const adminEmails = ["justin_wang@tech.gov.sg"];
+  const { rows: adminRole } = await client.query(
+    `SELECT id FROM "Role" WHERE name = 'ADMIN'`
+  );
+  if (adminRole.length > 0) {
+    for (const email of adminEmails) {
+      const { rowCount } = await client.query(
+        `UPDATE "User" SET "roleId" = $1 WHERE email = $2 AND ("roleId" IS NULL OR "roleId" != $1)`,
+        [adminRole[0].id, email]
+      );
+      if (rowCount > 0) {
+        console.log(`Promoted to ADMIN: ${email}`);
+      }
+    }
+  }
+
   console.log("Seed check complete");
 }
 
