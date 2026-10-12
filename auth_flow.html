@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spectra POC — Auth + RBAC Flow</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; padding: 40px 20px; }
+    h1 { text-align: center; font-size: 24px; margin-bottom: 8px; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 40px; font-size: 14px; }
+    .container { max-width: 900px; margin: 0 auto; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 40px; }
+    .timeline::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 2px; background: #cbd5e1; }
+
+    .step { position: relative; margin-bottom: 32px; }
+    .step-number { position: absolute; left: -40px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; z-index: 1; }
+
+    .step-content { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+    .step-title { font-weight: 700; font-size: 16px; margin-bottom: 6px; }
+    .step-desc { color: #475569; font-size: 14px; line-height: 1.6; }
+    .step-detail { margin-top: 12px; background: #f1f5f9; border-radius: 8px; padding: 12px 16px; font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace; color: #334155; line-height: 1.7; }
+
+    /* Colors per actor */
+    .color-user { background: #3b82f6; }
+    .color-provider { background: #8b5cf6; }
+    .color-nextauth { background: #f59e0b; }
+    .color-db { background: #10b981; }
+    .color-app { background: #06b6d4; }
+    .color-admin { background: #ef4444; }
+
+    .border-user { border-left: 3px solid #3b82f6; }
+    .border-provider { border-left: 3px solid #8b5cf6; }
+    .border-nextauth { border-left: 3px solid #f59e0b; }
+    .border-db { border-left: 3px solid #10b981; }
+    .border-app { border-left: 3px solid #06b6d4; }
+    .border-admin { border-left: 3px solid #ef4444; }
+
+    /* Legend */
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 36px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+    /* Arrow between sections */
+    .section-divider { text-align: center; margin: 48px 0 32px; position: relative; }
+    .section-divider span { background: #f8fafc; padding: 0 16px; position: relative; z-index: 1; font-weight: 700; font-size: 18px; color: #1e293b; }
+    .section-divider::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: #cbd5e1; }
+
+    /* Data flow box */
+    .data-box { display: inline-block; background: #fefce8; border: 1px solid #fde047; border-radius: 6px; padding: 2px 8px; font-family: 'SF Mono', monospace; font-size: 12px; margin: 2px; }
+    .arrow { color: #94a3b8; margin: 0 4px; }
+
+    /* Note callout */
+    .note { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #1e40af; margin-top: 12px; }
+    .note strong { color: #1e3a8a; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Spectra POC — Authentication & RBAC Flow</h1>
+  <p class="subtitle">How a user signs in, gets a role from the database, and sees scoped data</p>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> User Action</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div> Identity Provider</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> NextAuth</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div> PostgreSQL DB</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div> App (Browser)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> Admin</div>
+  </div>
+
+  <!-- SIGN-IN FLOW -->
+  <div class="timeline">
+
+    <div class="step">
+      <div class="step-number color-user">1</div>
+      <div class="step-content border-user">
+        <div class="step-title">User clicks "Sign In"</div>
+        <div class="step-desc">User chooses either Microsoft Entra ID or GovAuth on the home page.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number color-provider">2</div>
+      <div class="step-content border-provider">
+        <div class="step-title">Redirect to Identity Provider</div>
+        <div class="step-desc">NextAuth redirects the browser to the chosen provider's login page. The user enters their credentials there — we never see the password
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number color-provider">3</div>
+      <div class="step-content border-provider">
+        <div class="step-title">Provider returns profile</div>
+        <div class="step-desc">After successful login, the provider redirects back to our app with the user's profile.</div>
+        <div class="step-detail">
+          Provider sends: <span class="data-box">name</span> <span class="data-box">email</span> <span class="data-box">image</span><br>
+          Provider does NOT send: role, agency, permissions
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number color-nextauth">4</div>
+      <div class="step-content border-nextauth">
+        <div class="step-title">Prisma Adapter — Find or Create User</div>
+        <div class="step-desc">NextAuth's Prisma adapter checks the database: does a user with this email already exist?</div>
+        <div class="step-detail">
+          <strong>Existing user?</strong> → Fetch their User row from DB<br>
+          <strong>New user?</strong> → INSERT new User row + Account row into DB
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number color-db">5</div>
+      <div class="step-content border-db">
+        <div class="step-title">createUser Event — Assign Default Role</div>
+        <div class="step-desc">Only runs for brand-new users (first login ever). Assigns the VIEWER role automatically.</div>
+        <div class="step-detail">
+          UPDATE User SET roleId = (VIEWER role id)<br>
+          <em>This is why every new user starts as a VIEWER.</em>
+        </div>
+        <div class="note">
+          <strong>Note:</strong> This does NOT run on subsequent logins — only the very first time.
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number color-nextauth">6</div>
+      <div class="step-content border-nextauth">
+        <div class="step-title">JWT Callback — Load Role & Agencies from DB</div>
+        <div class="step-desc">Runs on every sign-in. Queries the database for the user's current role and agency assignments, then embeds them in the JWT cookie.</div>
+        <div class="step-detail">
+          SELECT User + Role + UserAgency + Agency<br><br>
+          Writes into JWT cookie:<br>
+          <span class="data-box">token.role = "VIEWER"</span><br>
+          <span class="data-box">token.agencyCodes = ["GOVTECH", "MOH"]</span><br>
+          <span class="data-box">token.agencyNames = ["Gov Technology Agency", "Ministry of Health"]</span>
+        </div>
+        <div class="note">
+          <strong>Key insight:</strong> After this step, role/agency data lives in the cookie. No database query needed on every page load — that's why we use JWT str
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number color-app">7</div>
+      <div class="step-content border-app">
+        <div class="step-title">Session Callback — Expose to Components</div>
+        <div class="step-desc">Runs every time a component calls <code>useSession()</code>. Copies role and agencies from the JWT into the session object. No database query.</div>
+        <div class="step-detail">
+          session.user = {<br>
+          &nbsp;&nbsp;id: "clx1abc...",<br>
+          &nbsp;&nbsp;name: "Justin Wang",<br>
+          &nbsp;&nbsp;email: "justin@tech.gov.sg",<br>
+          &nbsp;&nbsp;role: <span class="data-box">"VIEWER"</span>,<br>
+          &nbsp;&nbsp;agencyCodes: <span class="data-box">["GOVTECH", "MOH"]</span>,<br>
+          &nbsp;&nbsp;agencyNames: <span class="data-box">["Gov Technology Agency", "Ministry of Health"]</span><br>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number color-app">8</div>
+      <div class="step-content border-app">
+        <div class="step-title">Dashboard Renders Based on Role & Agency</div>
+        <div class="step-desc">The app uses session data to control what the user sees.</div>
+        <div class="step-detail">
+          <strong>ADMIN</strong> → sees ALL services, gets "Admin" link<br>
+          <strong>EDITOR</strong> → sees their agencies' services, can modify settings<br>
+          <strong>VIEWER</strong> → sees their agencies' services, read-only<br><br>
+          Databricks query filtered by: WHERE service_name IN (services mapped to user's agencies)
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ADMIN ROLE CHANGE -->
+  <div class="section-divider"><span>Admin Changes a User's Role</span></div>
+
+  <div class="timeline">
+
+    <div class="step">
+      <div class="step-number color-admin">A</div>
+      <div class="step-content border-admin">
+        <div class="step-title">Admin opens the Admin Page</div>
+        <div class="step-desc">An ADMIN user navigates to <code>/admin</code>. The admin layout checks their role — non-admins are redirected away.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number color-admin">B</div>
+      <div class="step-content border-admin">
+        <div class="step-title">Admin changes a user's role</div>
+        <div class="step-desc">The admin selects a user and changes their role from VIEWER to EDITOR.</div>
+        <div class="step-detail">
+          PATCH /api/admin/users/[id]<br>
+          Body: { roleId: "(EDITOR role id)" }<br><br>
+          API route checks: is the requester an ADMIN?<br>
+          → YES: UPDATE User SET roleId = (EDITOR role id)<br>
+          → NO: return 403 Forbidden
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number color-db">C</div>
+      <div class="step-content border-db">
+        <div class="step-title">Change saved in database</div>
+        <div class="step-desc">The user's role is updated in PostgreSQL immediately.</div>
+        <div class="note">
+          <strong>Important:</strong> The affected user's JWT cookie still has the OLD role. They keep their old permissions until they <strong>sign out and sign back in</strong>. On next sign-in, Step 6 (JWT Callback) re-reads the database and picks up the new EDITOR role.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -22,5 +22,12 @@ stages:
 - cleanup
 sast:
   stage: test
+
+# Disable Auto-DevOps build — Northflank handles Docker builds
+build:
+  stage: build
+  script:
+    - echo "Build handled by Northflank — skipping GitLab build"
+
 include:
 - template: Auto-DevOps.gitlab-ci.yml
