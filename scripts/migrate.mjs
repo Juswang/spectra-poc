@@ -64,7 +64,56 @@ async function migrate() {
   }
 
   console.log("All migrations applied");
+
+  // Seed roles and agencies if they don't exist
+  await seed();
+
   await client.end();
+}
+
+async function seed() {
+  const roles = [
+    { name: "ADMIN", description: "Full access — manage users, roles, agencies, see all data" },
+    { name: "EDITOR", description: "Can modify dashboard configurations" },
+    { name: "VIEWER", description: "Read-only access to dashboards scoped to their agency" },
+  ];
+
+  for (const role of roles) {
+    const { rows } = await client.query(
+      `SELECT id FROM "Role" WHERE name = $1`,
+      [role.name]
+    );
+    if (rows.length === 0) {
+      await client.query(
+        `INSERT INTO "Role" (id, name, description, "createdAt") VALUES (gen_random_uuid()::text, $1, $2, now())`,
+        [role.name, role.description]
+      );
+      console.log(`Seeded role: ${role.name}`);
+    }
+  }
+
+  const agencies = [
+    { name: "Government Technology Agency", code: "GOVTECH" },
+    { name: "Ministry of Health", code: "MOH" },
+    { name: "Ministry of Education", code: "MOE" },
+    { name: "Ministry of Finance", code: "MOF" },
+  ];
+
+  for (const agency of agencies) {
+    const { rows } = await client.query(
+      `SELECT id FROM "Agency" WHERE code = $1`,
+      [agency.code]
+    );
+    if (rows.length === 0) {
+      await client.query(
+        `INSERT INTO "Agency" (id, name, code, "createdAt") VALUES (gen_random_uuid()::text, $1, $2, now())`,
+        [agency.name, agency.code]
+      );
+      console.log(`Seeded agency: ${agency.name}`);
+    }
+  }
+
+  console.log("Seed check complete");
 }
 
 migrate();
