@@ -32,6 +32,7 @@ export default function Navbar() {
               </Link>
             )}
 
+
             {isAdmin && (
               <Link
                 href="/admin"
