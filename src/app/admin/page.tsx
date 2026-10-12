@@ -13,9 +13,9 @@
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorDisplay from "@/components/ErrorDisplay";
-import AdminUsersTable from "@/components/admin/AdminUsersTable";
-import AdminServiceTable from "@/components/admin/AdminServiceTable";
-import { useAdminData } from "@/hooks/useAdminData";
+//import AdminUsersTable from "@/components/admin/AdminUsersTable";
+//import AdminServiceTable from "@/components/admin/AdminServiceTable";
+//import { useAdminData } from "@/hooks/useAdminData";
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
