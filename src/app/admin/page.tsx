@@ -28,7 +28,7 @@ export default function AdminPage() {
     refresh,
     updateUserRole,
     toggleService,
-  } = useAdminData();
+  }// = useAdminData();
 
   // Session loading
   if (status === "loading") return <LoadingSpinner />;
@@ -56,11 +56,6 @@ export default function AdminPage() {
         <p className="text-gray-500 mt-1">
           Manage users, services, and operational settings.
         </p>
-      </div>
-
-      <div className="space-y-6">
-        <AdminUsersTable users={users} onUpdateRole={updateUserRole} />
-        <AdminServiceTable services={services} onToggleService={toggleService} />
       </div>
 
       <div className="flex items-center justify-between border-t border-gray-200 pt-4 mt-8">
