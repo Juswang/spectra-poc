@@ -1,0 +1,121 @@
+// Generates the Prisma client — the library you import to query the database.
+// Output path is where Prisma 6 puts the generated code.
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// Tells Prisma to use PostgreSQL and read the connection string
+// from the DATABASE_URL environment variable.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── NextAuth Required Models ───────────────────────────
+// The Prisma adapter requires these four tables.
+// Without them, NextAuth throws an error on login.
+
+// User — one row per person, regardless of which provider they used.
+// We extend it with roleId and agencies (our custom fields).
+model User {
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  emailVerified DateTime?
+  image         String?
+  roleId        String?
+  role          Role?        @relation(fields: [roleId], references: [id])
+  agencies      UserAgency[]
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+// Account — stores OAuth credentials for each login method.
+// If you log in with both Entra ID and GovAuth, you get TWO Account
+// rows both pointing to the SAME User row.
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// Session — required by the adapter but NOT actively used because
+// we use JWT strategy (tokens live in cookies, not the database).
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// VerificationToken — used for email-based sign-in (magic links).
+// We don't use email sign-in, but the adapter requires this table.
+model VerificationToken {
+  identifier String
+  token      String @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── Application Models ─────────────────────────────────
+
+// Role — what a user can do. Separate table (not enum) so roles
+// can be managed from the admin page without database migrations.
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  users       User[]
+  createdAt   DateTime @default(now())
+}
+
+// Agency — a government agency. The "code" is the short identifier
+// used when filtering Databricks queries (e.g., "GOVTECH", "MOH").
+model Agency {
+  id              String               @id @default(cuid())
+  name            String               @unique
+  code            String               @unique
+  users           UserAgency[]
+  serviceMappings ServiceAgencyMapping[]
+  createdAt       DateTime             @default(now())
+}
+
+// UserAgency — junction table for many-to-many.
+// A user can belong to multiple agencies.
+model UserAgency {
+  id       String @id @default(cuid())
+  userId   String
+  agencyId String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, agencyId])
+}
+
+// ServiceAgencyMapping — links a Databricks service name to an agency.
+// Interim solution until Databricks tables get an agency column.
+model ServiceAgencyMapping {
+  id          String @id @default(cuid())
+  serviceName String
+  agencyCode  String
+  agency      Agency @relation(fields: [agencyCode], references: [code])
+
+  @@unique([serviceName, agencyCode])
+}
