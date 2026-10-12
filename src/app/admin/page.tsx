@@ -11,15 +11,9 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import ErrorDisplay from "@/components/ErrorDisplay";
-//import AdminUsersTable from "@/components/admin/AdminUsersTable";
-//import AdminServiceTable from "@/components/admin/AdminServiceTable";
-//import { useAdminData } from "@/hooks/useAdminData";
 
 export default function AdminPage() {
-  const { data: session, status } = useSession();
-
+  const { data: session } = useSession();
 
   // Session loading
   if (status === "loading") return <LoadingSpinner />;
@@ -37,31 +31,46 @@ export default function AdminPage() {
   }
   */
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorDisplay message={error} onRetry={refresh} />;
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Admin Console</h1>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
         <p className="text-gray-500 mt-1">
-          Manage users, services, and operational settings.
+          Welcome, {session?.user?.name || "Admin"}.
         </p>
       </div>
 
-      <div className="flex items-center justify-between border-t border-gray-200 pt-4 mt-8">
-        <button
-          onClick={refresh}
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? "Refreshing..." : "Refresh Admin Data"}
-        </button>
-        {lastUpdated && (
-          <p className="text-sm text-gray-400">
-            Last updated: {lastUpdated.toLocaleTimeString()}
+      {/* Clean sections with no data binding */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <section className="rounded-xl border border-gray-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-gray-800">User Management</h2>
+          <p className="text-sm text-gray-500 mt-2">
+            Add controls for creating, editing, and disabling users.
           </p>
-        )}
+        </section>
+
+        <section className="rounded-xl border border-gray-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-gray-800">Roles & Permissions</h2>
+          <p className="text-sm text-gray-500 mt-2">
+            Configure role-based access settings for your app.
+          </p>
+        </section>
+
+        <section className="rounded-xl border border-gray-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-gray-800">System Settings</h2>
+          <p className="text-sm text-gray-500 mt-2">
+            Manage global settings, notifications, and preferences.
+          </p>
+        </section>
+
+        <section className="rounded-xl border border-gray-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-gray-800">Audit Logs</h2>
+          <p className="text-sm text-gray-500 mt-2">
+            View important admin actions and change history.
+          </p>
+        </section>
       </div>
     </div>
   );
