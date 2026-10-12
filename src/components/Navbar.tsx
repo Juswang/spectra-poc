@@ -27,7 +27,7 @@ export default function Navbar() {
             )}
 
             {/* Show Admin link if the user logged in is admin */}
-            {session && (
+            {session && session?.user?.role === "admin" (
               <Link
                 href="/admin"
                 className="text-gray-600 hover:text-blue-600 transition-colors"

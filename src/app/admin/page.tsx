@@ -17,7 +17,7 @@ export default function AdminPage() {
 
 
   // Basic guard (replace with real role check)
-  /*
+  
   const isAdmin = session?.user?.role === "admin";
   if (!isAdmin) {
     return (
@@ -27,7 +27,6 @@ export default function AdminPage() {
       />
     );
   }
-  */
 
 
   return (

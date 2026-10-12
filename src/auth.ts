@@ -32,6 +32,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     authorized: async ({ auth: session, request }) => {
       const isProtected = request.nextUrl.pathname.startsWith("/dashboard");
+      session.role = "admin";
       if (isProtected && !session) return false;
       return true;
     },
