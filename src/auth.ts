@@ -13,7 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // 1. JWT carries role/agency in the cookie (no DB query per page load)
   // 2. It's stateless — better for scaling across multiple servers
   // 3. It matches the app's current behavior
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 30 * 60 },
 
   providers: [
     MicrosoftEntraID,
