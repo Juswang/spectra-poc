@@ -124,6 +124,79 @@ async function seed() {
   }
 
   console.log("Seed check complete");
+
+  await seedAdoptionMetrics(agencies);
+}
+
+const PRODUCTS = ["exchange", "teams", "zoom"];
+
+function monthIndexToKey(m) {
+  const d = new Date(2025, 9 + m, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function generateRecord(id, m, p) {
+  const k = PRODUCTS.indexOf(p);
+  const base = 650 + ((id * 7919) % 6800);
+  const provisioned = Math.round(base * [1, 0.91, 0.16][k]);
+  const wave = Math.sin(id * 2.1 + m * 0.7 + k) * 0.025;
+  const adoption = Math.min(
+    0.96,
+    0.53 + (((id * 13 + k * 9) % 28) / 100) + m * 0.009 + wave
+  );
+  const active = Math.round(provisioned * adoption);
+  const sessions = Math.round(
+    active * (k === 1 ? 8.5 : 3.2) * (1 + Math.cos(id + m) * 0.08)
+  );
+  const duration = +(
+    22 + ((id * 3 + k * 7) % 22) + Math.sin(m + id) * 2
+  ).toFixed(2);
+
+  return {
+    provisioned,
+    active,
+    daily: Math.round(active * 0.64),
+    emails: Math.round(active * (155 + m * 2)),
+    spam: Math.round(active * (42 + m * 0.8)),
+    sessions,
+    duration,
+    hosts: Math.round(active * (k === 2 ? 0.08816 : 0.27)),
+    minutes: Math.round(sessions * duration),
+  };
+}
+
+async function seedAdoptionMetrics(agencies) {
+  const { rows: existing } = await client.query(
+    `SELECT COUNT(*)::int AS count FROM "AdoptionMetric"`
+  );
+  if (existing[0].count > 0) {
+    console.log(`Adoption metrics already seeded (${existing[0].count} rows)`);
+    return;
+  }
+
+  const MONTH_COUNT = 15;
+  let inserted = 0;
+
+  for (let agencyIdx = 0; agencyIdx < agencies.length; agencyIdx++) {
+    const agency = agencies[agencyIdx];
+    for (let m = 0; m < MONTH_COUNT; m++) {
+      for (const product of PRODUCTS) {
+        const r = generateRecord(agencyIdx, m, product);
+        await client.query(
+          `INSERT INTO "AdoptionMetric"
+            (id, "agencyCode", month, product, provisioned, active, daily, emails, spam, sessions, duration, hosts, minutes, "createdAt")
+           VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, now())
+           ON CONFLICT ("agencyCode", month, product) DO NOTHING`,
+          [agency.code, monthIndexToKey(m), product,
+           r.provisioned, r.active, r.daily, r.emails, r.spam,
+           r.sessions, r.duration, r.hosts, r.minutes]
+        );
+        inserted++;
+      }
+    }
+  }
+
+  console.log(`Seeded ${inserted} adoption metric rows`);
 }
 
 migrate();
