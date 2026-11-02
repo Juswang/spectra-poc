@@ -8,12 +8,19 @@ if (!DATABASE_URL) {
   process.exit(1);
 }
 
+const url = new URL(DATABASE_URL);
+const schema = url.searchParams.get("schema") || "public";
+
 const client = new pg.Client({ connectionString: DATABASE_URL });
 
 async function migrate() {
   await client.connect();
 
-  // Create migrations tracking table if it doesn't exist
+  if (schema !== "public") {
+    await client.query(`CREATE SCHEMA IF NOT EXISTS "${schema}"`);
+    await client.query(`SET search_path TO "${schema}"`);
+  }
+
   await client.query(`
     CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
       "id" TEXT PRIMARY KEY,
@@ -30,7 +37,6 @@ async function migrate() {
     .sort();
 
   for (const dir of dirs) {
-    // Check if already applied
     const { rows } = await client.query(
       `SELECT id FROM "_prisma_migrations" WHERE "migration_name" = $1`,
       [dir]
@@ -65,9 +71,7 @@ async function migrate() {
 
   console.log("All migrations applied");
 
-  // Seed roles and agencies if they don't exist
   await seed();
-
   await client.end();
 }
 
@@ -94,9 +98,15 @@ async function seed() {
 
   const agencies = [
     { name: "Government Technology Agency", code: "GOVTECH" },
-    { name: "Ministry of Health", code: "MOH" },
     { name: "Ministry of Education", code: "MOE" },
+    { name: "National Environment Agency", code: "NEA" },
+    { name: "Enterprise Singapore", code: "ESG" },
+    { name: "Economic Development Board", code: "EDB" },
+    { name: "Infocomm Media Development Authority", code: "IMDA" },
+    { name: "Centre for Strategic Infocomm Technologies", code: "CSIT" },
+    { name: "Ministry of Health", code: "MOH" },
     { name: "Ministry of Finance", code: "MOF" },
+    { name: "Ministry of Manpower", code: "MOM" },
   ];
 
   for (const agency of agencies) {
@@ -110,23 +120,6 @@ async function seed() {
         [agency.name, agency.code]
       );
       console.log(`Seeded agency: ${agency.name}`);
-    }
-  }
-
-  // Promote initial admin user by email
-  const adminEmails = ["justin_wang@tech.gov.sg"];
-  const { rows: adminRole } = await client.query(
-    `SELECT id FROM "Role" WHERE name = 'ADMIN'`
-  );
-  if (adminRole.length > 0) {
-    for (const email of adminEmails) {
-      const { rowCount } = await client.query(
-        `UPDATE "User" SET "roleId" = $1 WHERE email = $2 AND ("roleId" IS NULL OR "roleId" != $1)`,
-        [adminRole[0].id, email]
-      );
-      if (rowCount > 0) {
-        console.log(`Promoted to ADMIN: ${email}`);
-      }
     }
   }
 
