@@ -53,8 +53,8 @@ function AiFeaturesBarChart({ bars }: { bars: ZoomAiData["featuresBar"] }) {
         label: b.period,
         segments: b.features.map((f, i) => ({ name: f.name, value: f.value, color: CHART_COLORS[i] })),
       }))}
-      width={330}
-      height={220}
+      width={500}
+      height={280}
     />
   );
 }

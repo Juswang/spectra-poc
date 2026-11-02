@@ -64,6 +64,20 @@ export default function AdoptionFilters({
       ? `All ${allAgencies.length} agencies`
       : `${selectedAgencies.length} agencies selected`;
 
+  const isQuarter = periodMode === "quarter";
+
+  function toQuarterLabel(monthValue: string): string {
+    const m = parseInt(monthValue.split("-")[1], 10);
+    const y = monthValue.split("-")[0];
+    const q = Math.ceil(m / 3);
+    return `Q${q} ${y}`;
+  }
+
+  const quarterEndMonths = new Set([3, 6, 9, 12]);
+  const displayMonths = isQuarter
+    ? availableMonths.filter((m) => quarterEndMonths.has(parseInt(m.value.split("-")[1], 10)))
+    : availableMonths;
+
   return (
     <>
       <section className="sa-filters">
@@ -74,7 +88,20 @@ export default function AdoptionFilters({
               <select
                 className="sa-period-mode-select"
                 value={periodMode}
-                onChange={(e) => onPeriodModeChange(e.target.value as PeriodMode)}
+                onChange={(e) => {
+                  const newMode = e.target.value as PeriodMode;
+                  onPeriodModeChange(newMode);
+                  if (newMode === "quarter") {
+                    const m = parseInt(month.split("-")[1], 10);
+                    if (!quarterEndMonths.has(m)) {
+                      const qEnd = Math.ceil(m / 3) * 3;
+                      const y = month.split("-")[0];
+                      const snapped = `${y}-${String(qEnd).padStart(2, "0")}`;
+                      const valid = availableMonths.find((am) => am.value === snapped);
+                      if (valid) onMonthChange(snapped);
+                    }
+                  }
+                }}
               >
                 <option value="month">Month</option>
                 <option value="quarter">Quarter</option>
@@ -85,8 +112,10 @@ export default function AdoptionFilters({
               value={month}
               onChange={(e) => onMonthChange(e.target.value)}
             >
-              {availableMonths.map((m) => (
-                <option key={m.value} value={m.value}>{m.label}</option>
+              {displayMonths.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {isQuarter ? toQuarterLabel(m.value) : m.label}
+                </option>
               ))}
             </select>
           </div>

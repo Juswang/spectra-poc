@@ -514,11 +514,13 @@ body:has(.spectra-adoption) > div > main {
 .spectra-adoption .sa-filters {
   display: flex;
   align-items: end;
+  flex-wrap: wrap;
   gap: 24px;
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   padding: 24px;
   border-radius: var(--radius-md);
+  overflow: visible;
 }
 
 .spectra-adoption .sa-filters label {
@@ -541,7 +543,8 @@ body:has(.spectra-adoption) > div > main {
 }
 
 .spectra-adoption .sa-month-select {
-  width: 188px;
+  width: 220px;
+  min-height: 48px;
 }
 
 .spectra-adoption .sa-agency-wrap {
@@ -660,7 +663,7 @@ body:has(.spectra-adoption) > div > main {
 }
 
 .spectra-adoption .sa-kpi-label {
-  font-size: 11px;
+  font-size: var(--font-size-sm);
   color: var(--color-text-label);
 }
 
@@ -673,12 +676,12 @@ body:has(.spectra-adoption) > div > main {
 }
 
 .spectra-adoption .sa-kpi-value small {
-  font-size: 13px;
+  font-size: var(--font-size-xl);
   letter-spacing: 0;
 }
 
 .spectra-adoption .sa-delta {
-  font-size: 10px;
+  font-size: var(--font-size-sm);
   color: var(--color-status-positive);
 }
 
@@ -695,7 +698,7 @@ body:has(.spectra-adoption) > div > main {
 }
 
 .spectra-adoption .sa-kpi-note {
-  font-size: 10px;
+  font-size: var(--font-size-sm);
   color: var(--color-text-tertiary);
   margin-top: 8px;
 }
@@ -1152,15 +1155,21 @@ body:has(.spectra-adoption) > div > main {
 
 .spectra-adoption .sa-zoom-monthly-chart {
   width: 100%;
-  min-height: 170px;
+  min-height: 200px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .spectra-adoption .sa-zoom-monthly-chart svg {
   width: 100%;
+  max-width: 100%;
   height: auto;
   display: block;
+}
+
+.spectra-adoption .sa-zoom-monthly-chart .sa-chart-hover-wrap {
+  width: 100%;
 }
 
 
@@ -1245,10 +1254,19 @@ body:has(.spectra-adoption) > div > main {
    Zoom Tab — Shared SVG chart container
    ============================================================ */
 
+.spectra-adoption .sa-zoom-chart {
+  width: 100%;
+}
+
 .spectra-adoption .sa-zoom-chart svg {
   width: 100%;
+  max-width: 100%;
   height: auto;
   display: block;
+}
+
+.spectra-adoption .sa-zoom-chart .sa-chart-hover-wrap {
+  width: 100%;
 }
 
 
@@ -1257,19 +1275,20 @@ body:has(.spectra-adoption) > div > main {
 .spectra-adoption .sa-chart-hover-wrap {
   position: relative;
   cursor: crosshair;
+  overflow: visible;
 }
 
 .spectra-adoption .sa-chart-tooltip {
   position: absolute;
-  z-index: 10;
+  z-index: 50;
   pointer-events: none;
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-dropdown);
-  padding: 10px 14px;
-  min-width: 170px;
-  font-size: var(--font-size-xs);
+  padding: 12px 16px;
+  min-width: 180px;
+  font-size: var(--font-size-sm);
   line-height: var(--line-height-relaxed);
 }
 
@@ -1311,8 +1330,9 @@ body:has(.spectra-adoption) > div > main {
    ============================================================ */
 
 .spectra-adoption .sa-period-mode-select {
-  width: 92px;
-  margin-right: 8px;
+  width: 130px;
+  min-height: 48px;
+  margin-right: 0;
 }
 
 
@@ -1372,13 +1392,13 @@ body:has(.spectra-adoption) > div > main {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  width: 280px;
+  min-width: 280px;
+  max-width: 360px;
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: 8px;
   box-shadow: var(--shadow-dropdown);
   z-index: 100;
-  overflow: hidden;
 }
 
 .spectra-adoption .sa-user-dropdown-header {
@@ -1421,7 +1441,8 @@ body:has(.spectra-adoption) > div > main {
 .spectra-adoption .sa-user-dropdown-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  gap: 12px;
   padding: 6px 0;
 }
 
@@ -1437,14 +1458,11 @@ body:has(.spectra-adoption) > div > main {
 }
 
 .spectra-adoption .sa-user-dropdown-value {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   color: var(--color-text-primary);
   font-weight: 500;
   text-align: right;
-  max-width: 60%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.4;
 }
 
 .spectra-adoption .sa-user-role-badge {

@@ -9,9 +9,8 @@ interface AdoptionSidebarProps {
 export default function AdoptionSidebar({ activeTab, onTabChange }: AdoptionSidebarProps) {
   return (
     <aside className="sa-aside">
-      <div className="sa-nav-label">WORKSPACE</div>
       <nav className="sa-nav">
-        <div className="sa-nav-label sa-products">PRODUCT ANALYTICS</div>
+        <div className="sa-nav-label">PRODUCT ANALYTICS</div>
         <button
           className={activeTab === "zoom" ? "active" : ""}
           onClick={() => onTabChange("zoom")}

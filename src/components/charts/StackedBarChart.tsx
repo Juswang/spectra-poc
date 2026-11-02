@@ -30,7 +30,7 @@ export default function StackedBarChart({ bars, width = 300, height = 190 }: Sta
   const totals = bars.map((b) => b.segments.reduce((s, seg) => s + seg.value, 0));
   const max = Math.max(1, ...totals) * 1.12;
   const slotW = plotW / bars.length;
-  const barW = slotW * 0.56;
+  const barW = slotW * 0.65;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [hover, setHover] = useState<{ barIdx: number; x: number; y: number } | null>(null);
@@ -49,7 +49,7 @@ export default function StackedBarChart({ bars, width = 300, height = 190 }: Sta
           return (
             <g key={i}>
               <line x1={left} y1={gy} x2={width - right} y2={gy} stroke="var(--color-border-chart-grid)" strokeDasharray="2 3" />
-              <text x={left - 7} y={gy + 3} fontSize="8" textAnchor="end" fill="var(--color-text-tertiary)">{compact(max * (1 - i / 3))}</text>
+              <text x={left - 7} y={gy + 3} fontSize="11" textAnchor="end" fill="var(--color-text-tertiary)">{compact(max * (1 - i / 3))}</text>
             </g>
           );
         })}
@@ -72,7 +72,7 @@ export default function StackedBarChart({ bars, width = 300, height = 190 }: Sta
                 stackH += segH;
                 return <rect key={name} x={bx} y={sy} width={barW} height={segH} rx="1.5" fill={color} />;
               })}
-              <text x={bx + barW / 2} y={height - 9} fontSize="8" textAnchor="middle" fill="var(--color-text-tertiary)">{b.label}</text>
+              <text x={bx + barW / 2} y={height - 9} fontSize="11" textAnchor="middle" fill="var(--color-text-tertiary)">{b.label}</text>
             </g>
           );
         })}
