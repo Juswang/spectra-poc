@@ -1,3 +1,4 @@
+// Type definitions for service monitoring: ServiceSummary, ServiceLatestStatus.
 // =================================================================
 // src/types/services.ts
 // =================================================================

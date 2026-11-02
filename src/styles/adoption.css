@@ -1,0 +1,1620 @@
+/* Scoped CSS for the adoption dashboard — all rules under .spectra-adoption. */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+/* ============================================================
+   Spectra Adoption Dashboard — Scoped CSS
+   All rules scoped under .spectra-adoption to prevent bleed
+   into the rest of the Next.js app.
+   ============================================================ */
+
+/* Hide root layout Navbar when adoption dashboard is active */
+body:has(.spectra-adoption) > nav,
+body:has(.spectra-adoption) > div > nav {
+  display: none !important;
+}
+
+body:has(.spectra-adoption) {
+  background: color-mix(in srgb, #f7f7f7 92%, #adadad) !important;
+}
+
+body:has(.spectra-adoption) > main,
+body:has(.spectra-adoption) > div > main {
+  padding: 0 !important;
+}
+
+.spectra-adoption {
+  /* Break out of the root layout's <main> container */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 40;
+
+  /* Core palette */
+  --palette-cyan: #00c0f3;
+  --palette-magenta: #ba2fa2;
+  --palette-red: #f4333d;
+  --palette-black: #3d3d3d;
+  --palette-grey: #adadad;
+  --palette-white: #f7f7f7;
+  --gradient-red-magenta: linear-gradient(135deg, var(--palette-red), var(--palette-magenta));
+  --gradient-magenta-cyan: linear-gradient(135deg, var(--palette-magenta), var(--palette-cyan));
+
+  /* Brand */
+  --color-brand-primary: var(--palette-magenta);
+  --color-brand-accent: color-mix(in srgb, var(--palette-cyan) 62%, var(--palette-black));
+  --color-brand-secondary: var(--palette-red);
+  --color-brand-tertiary: var(--palette-magenta);
+  --color-brand-quaternary: var(--palette-cyan);
+  --color-brand-accent-dark: color-mix(in srgb, var(--palette-magenta) 78%, var(--palette-black));
+  --color-brand-accent-muted: var(--palette-magenta);
+  --color-brand-primary-hover: color-mix(in srgb, var(--palette-magenta) 84%, var(--palette-black));
+  --color-brand-gradient-start: var(--palette-red);
+  --color-brand-gradient-end: var(--palette-magenta);
+
+  /* Text */
+  --color-text-primary: var(--palette-black);
+  --color-text-secondary: color-mix(in srgb, var(--palette-black) 76%, var(--palette-white));
+  --color-text-tertiary: color-mix(in srgb, var(--palette-black) 58%, var(--palette-white));
+  --color-text-muted: color-mix(in srgb, var(--palette-black) 66%, var(--palette-white));
+  --color-text-label: color-mix(in srgb, var(--palette-black) 74%, var(--palette-white));
+  --color-text-placeholder: var(--palette-grey);
+  --color-text-brand-muted: color-mix(in srgb, var(--palette-magenta) 42%, var(--palette-black));
+  --color-text-on-brand: var(--palette-white);
+  --color-text-live: var(--palette-red);
+
+  /* Background */
+  --color-bg-page: color-mix(in srgb, var(--palette-white) 92%, var(--palette-grey));
+  --color-bg-surface: var(--palette-white);
+  --color-bg-surface-alt: color-mix(in srgb, var(--palette-white) 86%, var(--palette-grey));
+  --color-bg-surface-table: color-mix(in srgb, var(--palette-white) 90%, var(--palette-grey));
+  --color-bg-brand-light: color-mix(in srgb, var(--palette-cyan) 6%, var(--palette-white));
+  --color-bg-brand-lighter: color-mix(in srgb, var(--palette-cyan) 9%, var(--palette-white));
+  --color-bg-prototype-bar: color-mix(in srgb, var(--palette-magenta) 8%, var(--palette-white));
+
+  /* Border */
+  --color-border-default: color-mix(in srgb, var(--palette-grey) 48%, var(--palette-white));
+  --color-border-input: color-mix(in srgb, var(--palette-grey) 65%, var(--palette-white));
+  --color-border-subtle: color-mix(in srgb, var(--palette-grey) 28%, var(--palette-white));
+  --color-border-chart-grid: color-mix(in srgb, var(--palette-grey) 38%, var(--palette-white));
+  --color-border-bar-track: color-mix(in srgb, var(--palette-grey) 32%, var(--palette-white));
+  --color-border-brand: color-mix(in srgb, var(--palette-cyan) 22%, var(--palette-white));
+  --color-border-brand-subtle: color-mix(in srgb, var(--palette-cyan) 16%, var(--palette-white));
+
+  /* Status */
+  --color-status-positive: color-mix(in srgb, var(--palette-cyan) 58%, var(--palette-black));
+  --color-status-negative: var(--palette-red);
+  --color-status-focus: var(--palette-cyan);
+
+  /* Chart series */
+  --color-chart-1: var(--palette-cyan);
+  --color-chart-2: var(--palette-magenta);
+  --color-chart-3: color-mix(in srgb, var(--palette-red) 62%, var(--palette-white));
+  --color-chart-4: color-mix(in srgb, var(--palette-black) 54%, var(--palette-white));
+
+  /* Overlay */
+  --color-overlay-backdrop: color-mix(in srgb, var(--palette-black) 58%, transparent);
+  --color-overlay-dropdown-shadow: color-mix(in srgb, var(--palette-black) 20%, transparent);
+  --color-overlay-mark-shadow: color-mix(in srgb, var(--palette-magenta) 24%, transparent);
+
+  /* Typography */
+  --font-family: "Lato", "Segoe UI", Arial, sans-serif;
+  --font-size-2xs: 8px;
+  --font-size-xs: 10px;
+  --font-size-sm: 11px;
+  --font-size-base: 12px;
+  --font-size-md: 13px;
+  --font-size-lg: 14px;
+  --font-size-xl: 16px;
+  --font-size-2xl: 22px;
+  --font-size-3xl: 23px;
+  --font-size-4xl: 25px;
+  --font-size-5xl: 30px;
+  --font-size-6xl: 35px;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+  --line-height-loose: 1.8;
+  --line-height-spacious: 1.9;
+  --letter-spacing-tighter: -1.1px;
+  --letter-spacing-tight: -0.7px;
+  --letter-spacing-kpi: -1px;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.6px;
+  --letter-spacing-wider: 1.1px;
+  --letter-spacing-widest: 1.8px;
+  --letter-spacing-caps: 1.5px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+
+  /* Border radius */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 7px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-full: 9999px;
+
+  /* Utilization thresholds */
+  --color-utilization-green: #2e9d66;
+  --color-utilization-orange: #d97706;
+  --color-utilization-red: var(--palette-red);
+
+  /* Shadows */
+  --shadow-mark: 0 4px 12px var(--color-overlay-mark-shadow);
+  --shadow-dropdown: 0 9px 30px var(--color-overlay-dropdown-shadow);
+
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background: var(--color-bg-page);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
+}
+
+.spectra-adoption *,
+.spectra-adoption *::before,
+.spectra-adoption *::after {
+  box-sizing: border-box;
+}
+
+/* Override Tailwind preflight resets that break the wog design */
+.spectra-adoption h1 {
+  font-size: 35px;
+  font-weight: bold;
+  line-height: 1.2;
+  letter-spacing: -1.1px;
+}
+
+.spectra-adoption h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.spectra-adoption p {
+  margin: 6px 0;
+}
+
+.spectra-adoption strong {
+  font-weight: 600;
+}
+
+.spectra-adoption table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.spectra-adoption img,
+.spectra-adoption svg {
+  display: inline;
+  max-width: 100%;
+}
+
+.spectra-adoption button {
+  background: transparent;
+}
+
+.spectra-adoption select {
+  background-image: none;
+}
+
+.spectra-adoption input[type="checkbox"] {
+  appearance: auto;
+}
+
+.spectra-adoption button,
+.spectra-adoption input,
+.spectra-adoption select {
+  font: inherit;
+}
+
+.spectra-adoption button,
+.spectra-adoption select {
+  cursor: pointer;
+}
+
+.spectra-adoption button {
+  color: inherit;
+}
+
+.spectra-adoption button:focus-visible,
+.spectra-adoption select:focus-visible,
+.spectra-adoption input:focus-visible,
+.spectra-adoption a:focus-visible {
+  outline: 3px solid var(--color-status-focus);
+  outline-offset: 3px;
+}
+
+
+/* Prototype Banner */
+
+.spectra-adoption .sa-prototype {
+  background: var(--color-bg-prototype-bar);
+  border-bottom: 2px solid transparent;
+  border-image: var(--gradient-magenta-cyan) 1;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  letter-spacing: var(--letter-spacing-wide);
+  padding: 6px;
+  color: var(--color-text-brand-muted);
+}
+
+
+/* Header */
+
+.spectra-adoption .sa-header {
+  height: 86px;
+  background: var(--color-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.spectra-adoption .sa-brand {
+  text-decoration: none;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.spectra-adoption .sa-spectra-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--color-brand-gradient-start), var(--color-brand-gradient-end));
+  color: var(--color-text-on-brand);
+  font-size: 30px;
+  letter-spacing: -2px;
+  font-weight: 700;
+  box-shadow: var(--shadow-mark);
+}
+
+.spectra-adoption .sa-spectra-name {
+  font-size: 25px;
+  line-height: 1.1;
+  letter-spacing: -0.7px;
+  color: var(--color-brand-primary);
+}
+
+.spectra-adoption .sa-brand-tagline {
+  font-size: 10px;
+  color: var(--color-text-brand-muted);
+}
+
+.spectra-adoption .sa-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.spectra-adoption .sa-govtech-logo {
+  display: block;
+  width: clamp(180px, 18vw, 250px);
+  height: auto;
+  mix-blend-mode: multiply;
+}
+
+.spectra-adoption .sa-account-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 1px solid var(--color-border-default);
+  padding-left: 24px;
+}
+
+.spectra-adoption .sa-auth-button {
+  border: 1px solid var(--color-brand-primary);
+  background: var(--color-bg-surface);
+  color: var(--color-brand-primary);
+  border-radius: 5px;
+  padding: 9px 17px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.spectra-adoption .sa-auth-button:hover {
+  background: var(--color-bg-brand-light);
+}
+
+
+/* Shell Layout */
+
+.spectra-adoption .sa-shell {
+  display: flex;
+}
+
+
+/* Sidebar */
+
+.spectra-adoption .sa-aside {
+  width: 239px;
+  flex-shrink: 0;
+  background: var(--color-bg-surface);
+  min-height: calc(100vh - 86px);
+  border-right: 1px solid var(--color-border-default);
+  padding: 35px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.spectra-adoption .sa-nav-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--color-text-tertiary);
+  padding: 0 16px;
+  margin-bottom: 14px;
+}
+
+.spectra-adoption .sa-nav-label.sa-products {
+  margin-top: 32px;
+}
+
+.spectra-adoption .sa-nav button {
+  display: flex;
+  gap: 13px;
+  width: 100%;
+  border: 0;
+  background: none;
+  text-align: left;
+  padding: 14px 16px;
+  margin: 5px 0;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.spectra-adoption .sa-nav button.active {
+  background: var(--color-bg-brand-lighter);
+  color: var(--color-brand-accent-dark);
+  font-weight: 600;
+  border-left: 3px solid var(--color-brand-accent);
+}
+
+.spectra-adoption .sa-sidebar-bottom {
+  margin-top: auto;
+  padding: 70px 16px 0;
+  font-size: 11px;
+  color: var(--color-text-label);
+}
+
+.spectra-adoption .sa-sidebar-bottom p {
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.spectra-adoption .sa-sample-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--color-brand-accent);
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.spectra-adoption .sa-sidebar-bottom button {
+  background: none;
+  border: 0;
+  padding: 12px 0;
+  color: var(--color-text-label);
+}
+
+
+/* Main Content Area */
+
+.spectra-adoption .sa-main {
+  padding: 28px 38px;
+  width: calc(100% - 239px);
+  max-width: 1600px;
+}
+
+.spectra-adoption .sa-breadcrumb {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-bottom: 26px;
+}
+
+.spectra-adoption .sa-breadcrumb span {
+  margin-left: 12px;
+}
+
+.spectra-adoption .sa-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 27px;
+  gap: 20px;
+}
+
+.spectra-adoption .sa-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  color: var(--color-brand-accent);
+}
+
+.spectra-adoption .sa-title {
+  font-size: 35px;
+  line-height: 1.2;
+  letter-spacing: -1.1px;
+  margin: 9px 0;
+  font-weight: bold;
+}
+
+.spectra-adoption .sa-subtitle {
+  margin: 6px 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.spectra-adoption .sa-export {
+  background: var(--gradient-red-magenta);
+  color: var(--color-text-on-brand);
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) 19px;
+  white-space: nowrap;
+  font-size: var(--font-size-base);
+}
+
+.spectra-adoption .sa-export:hover {
+  background: var(--gradient-red-magenta);
+  filter: brightness(.92);
+}
+
+
+/* Filters */
+
+.spectra-adoption .sa-filters {
+  display: flex;
+  align-items: end;
+  gap: 20px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  padding: 18px 20px;
+  border-radius: 7px;
+}
+
+.spectra-adoption .sa-filters label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 7px;
+  color: var(--color-text-label);
+}
+
+.spectra-adoption .sa-filters select,
+.spectra-adoption .sa-agency-toggle {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-input);
+  border-radius: 4px;
+  padding: 10px 12px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+}
+
+.spectra-adoption .sa-month-select {
+  width: 188px;
+}
+
+.spectra-adoption .sa-agency-wrap {
+  position: relative;
+  min-width: 260px;
+}
+
+.spectra-adoption .sa-agency-toggle {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+}
+
+.spectra-adoption .sa-reset {
+  border: 0;
+  background: none;
+  font-size: 11px;
+  color: var(--color-text-label);
+  padding: 11px 0;
+}
+
+.spectra-adoption .sa-scope {
+  margin-left: auto;
+  font-size: 11px;
+  padding-bottom: 10px;
+  color: var(--color-text-muted);
+}
+
+.spectra-adoption .sa-agency-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 330px;
+  z-index: 50;
+  background: var(--color-bg-surface);
+  box-shadow: var(--shadow-dropdown);
+  border: 1px solid var(--color-border-default);
+  padding: 12px;
+  border-radius: 5px;
+}
+
+.spectra-adoption .sa-agency-search {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.spectra-adoption .sa-selection-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.spectra-adoption .sa-selection-actions button {
+  border: 0;
+  background: none;
+  color: var(--color-brand-secondary);
+  font-size: 12px;
+}
+
+.spectra-adoption .sa-agency-list {
+  max-height: 255px;
+  overflow: auto;
+}
+
+.spectra-adoption .sa-agency-list label {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 7px;
+  font-size: 12px;
+  margin: 0;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.spectra-adoption .sa-agency-list label:hover {
+  background: var(--color-bg-surface-alt);
+  border-radius: 3px;
+}
+
+.spectra-adoption .sa-agency-code-label {
+  margin-left: auto;
+  color: var(--color-text-tertiary);
+}
+
+
+/* Context Bar */
+
+.spectra-adoption .sa-context {
+  display: flex;
+  justify-content: space-between;
+  margin: 23px 0 12px;
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+
+/* KPI Cards */
+
+.spectra-adoption .sa-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.spectra-adoption .sa-kpi {
+  border: 1px solid var(--color-border-default);
+  border-top: 3px solid var(--accent);
+  border-radius: 6px;
+  background: var(--color-bg-surface);
+  padding: 19px;
+}
+
+.spectra-adoption .sa-kpi-label {
+  font-size: 11px;
+  color: var(--color-text-label);
+}
+
+.spectra-adoption .sa-kpi-value {
+  font-size: 30px;
+  letter-spacing: -1px;
+  font-weight: 600;
+  margin: 10px 0 8px;
+}
+
+.spectra-adoption .sa-kpi-value small {
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.spectra-adoption .sa-delta {
+  font-size: 10px;
+  color: var(--color-status-positive);
+}
+
+.spectra-adoption .sa-delta.sa-down {
+  color: var(--color-status-negative);
+}
+
+.spectra-adoption .sa-delta.sa-neutral {
+  color: var(--color-text-secondary);
+}
+
+.spectra-adoption .sa-delta-context {
+  color: var(--color-text-tertiary);
+}
+
+.spectra-adoption .sa-kpi-note {
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  margin-top: 8px;
+}
+
+
+/* Charts Section */
+
+.spectra-adoption .sa-charts {
+  display: grid;
+  grid-template-columns: 2.05fr 1fr;
+  gap: 20px;
+  margin: 22px 0;
+}
+
+.spectra-adoption .sa-panel {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: 7px;
+  padding: 22px;
+}
+
+.spectra-adoption .sa-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+}
+
+.spectra-adoption .sa-panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.spectra-adoption .sa-panel-desc {
+  font-size: 11px;
+  margin: 6px 0;
+  color: var(--color-text-secondary);
+}
+
+.spectra-adoption .sa-pill {
+  font-size: 8px;
+  color: var(--color-text-muted);
+  background: var(--color-bg-surface-alt);
+  padding: 5px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.spectra-adoption .sa-legend {
+  display: flex;
+  gap: 18px;
+  font-size: 10px;
+  color: var(--color-text-label);
+  margin: 20px 0 8px;
+}
+
+.spectra-adoption .sa-legend-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.spectra-adoption .sa-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+/* Insight Panel */
+
+.spectra-adoption .sa-insight-panel {
+  background: var(--color-bg-brand-light);
+  border-color: var(--color-border-brand);
+  display: flex;
+  flex-direction: column;
+}
+
+.spectra-adoption .sa-insight-panel .sa-eyebrow {
+  color: var(--color-brand-accent-muted);
+}
+
+.spectra-adoption .sa-insight-panel .sa-insight-title {
+  font-size: 23px;
+  font-weight: 600;
+  margin: 10px 0 15px;
+}
+
+.spectra-adoption .sa-insight {
+  border-top: 1px solid var(--color-border-brand-subtle);
+  padding: 13px 0;
+}
+
+.spectra-adoption .sa-insight strong {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.spectra-adoption .sa-insight p {
+  font-size: 11px;
+  margin: 4px 0;
+  color: var(--color-text-secondary);
+}
+
+.spectra-adoption .sa-insight-agency {
+  font-size: 17px;
+}
+
+.spectra-adoption .sa-insight-foot {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--color-text-brand-muted);
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+
+/* Comparison Table */
+
+.spectra-adoption .sa-comparison .sa-panel-head {
+  margin-bottom: 20px;
+}
+
+.spectra-adoption .sa-comparison label {
+  font-size: 10px;
+  color: var(--color-text-label);
+}
+
+.spectra-adoption .sa-comparison select {
+  font-size: 11px;
+  padding: 7px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-input);
+  border-radius: 4px;
+}
+
+.spectra-adoption .sa-table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: left;
+  font-size: 12px;
+}
+
+.spectra-adoption .sa-table th {
+  background: var(--color-bg-surface-table);
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.spectra-adoption .sa-table td,
+.spectra-adoption .sa-table th {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.spectra-adoption .sa-table td:first-child {
+  color: var(--color-text-placeholder);
+  width: 40px;
+}
+
+.spectra-adoption .sa-table td strong {
+  font-weight: 600;
+}
+
+.spectra-adoption .sa-table th button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font-size: inherit;
+  padding: 0;
+  text-align: left;
+}
+
+.spectra-adoption .sa-adoption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.spectra-adoption .sa-bar {
+  width: 60px;
+  height: 4px;
+  background: var(--color-border-bar-track);
+  border-radius: 4px;
+}
+
+.spectra-adoption .sa-bar-fill {
+  display: block;
+  height: 4px;
+  background: var(--gradient-magenta-cyan);
+  border-radius: 4px;
+}
+
+.spectra-adoption .sa-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 17px;
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+.spectra-adoption .sa-table-footer button {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  padding: 5px 10px;
+  margin: 0 8px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.spectra-adoption .sa-table-footer button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.spectra-adoption .sa-table-scroll {
+  overflow: auto;
+}
+
+.spectra-adoption .sa-agency-code {
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+}
+
+
+/* Footer */
+
+.spectra-adoption .sa-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 25px;
+  font-size: 9px;
+  color: var(--color-text-tertiary);
+}
+
+
+/* ============================================================
+   Zoom Tab — View toggle
+   ============================================================ */
+
+.spectra-adoption.sa-zoom-view .sa-context-comparison {
+  display: none;
+}
+
+.spectra-adoption.sa-zoom-view .sa-delta:not(.sa-down):not(.sa-neutral) {
+  color: var(--color-utilization-green);
+}
+
+.spectra-adoption.sa-zoom-view .sa-delta.sa-down {
+  color: var(--color-utilization-red);
+}
+
+.spectra-adoption.sa-zoom-view .sa-zoom-tag-growth {
+  color: var(--color-utilization-green);
+}
+
+.spectra-adoption.sa-zoom-view .sa-zoom-tag-growth.sa-zoom-tag-down {
+  color: var(--color-utilization-red);
+}
+
+
+/* ============================================================
+   Zoom Tab — KPI extensions (mini month tags + progress bars)
+   ============================================================ */
+
+.spectra-adoption .sa-zoom-kpi-tags {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.spectra-adoption .sa-zoom-tag {
+  min-width: 0;
+  padding: 6px;
+  border-radius: 3px;
+  background: var(--color-bg-surface-alt);
+  color: var(--color-text-label);
+  font-size: 8px;
+}
+
+.spectra-adoption .sa-zoom-tag strong {
+  display: block;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spectra-adoption .sa-zoom-tag-growth {
+  display: block;
+  margin-top: 2px;
+  font-size: 8px;
+  color: var(--color-utilization-green);
+  white-space: nowrap;
+}
+
+.spectra-adoption .sa-zoom-tag-growth.sa-zoom-tag-down {
+  color: var(--color-utilization-red);
+}
+
+.spectra-adoption .sa-zoom-ref-note {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+.spectra-adoption .sa-zoom-progress {
+  margin-top: 12px;
+}
+
+.spectra-adoption .sa-zoom-progress-label {
+  margin-bottom: 4px;
+  color: var(--color-text-label);
+  font-size: 10px;
+}
+
+.spectra-adoption .sa-zoom-progress-track {
+  display: block;
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--color-border-bar-track);
+}
+
+.spectra-adoption .sa-zoom-progress-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--color-brand-gradient-start), var(--color-brand-gradient-end));
+}
+
+.spectra-adoption .sa-zoom-progress-track .sa-util-green {
+  background: var(--color-utilization-green);
+}
+
+.spectra-adoption .sa-zoom-progress-track .sa-util-orange {
+  background: var(--color-utilization-orange);
+}
+
+.spectra-adoption .sa-zoom-progress-track .sa-util-red {
+  background: var(--color-utilization-red);
+}
+
+.spectra-adoption .sa-zoom-threshold-note {
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.spectra-adoption .sa-zoom-util-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  margin-top: 8px;
+  color: var(--color-text-tertiary);
+  font-size: 8px;
+}
+
+.spectra-adoption .sa-zoom-util-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.spectra-adoption .sa-zoom-util-legend i {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+}
+
+.spectra-adoption .sa-zoom-util-legend .sa-dot-green {
+  background: var(--color-utilization-green);
+}
+
+.spectra-adoption .sa-zoom-util-legend .sa-dot-orange {
+  background: var(--color-utilization-orange);
+}
+
+.spectra-adoption .sa-zoom-util-legend .sa-dot-red {
+  background: var(--color-utilization-red);
+}
+
+
+/* ============================================================
+   Zoom Tab — Activity toggle (Meetings / Webinars)
+   ============================================================ */
+
+.spectra-adoption .sa-zoom-activity-toggle {
+  display: flex;
+  padding: 2px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-brand-subtle);
+  border-radius: 5px;
+}
+
+.spectra-adoption .sa-zoom-activity-toggle button {
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--color-text-brand-muted);
+  padding: 4px 6px;
+  font-size: 8px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.spectra-adoption .sa-zoom-activity-toggle button.active {
+  background: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+}
+
+
+/* ============================================================
+   Zoom Tab — Meeting insight panel
+   ============================================================ */
+
+.spectra-adoption .sa-zoom-insight-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.spectra-adoption .sa-zoom-meeting-legend {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+  color: var(--color-text-brand-muted);
+  font-size: 8px;
+}
+
+.spectra-adoption .sa-zoom-meeting-legend span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.spectra-adoption .sa-zoom-meeting-legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+}
+
+.spectra-adoption .sa-zoom-monthly-chart {
+  width: 100%;
+  min-height: 170px;
+  display: flex;
+  align-items: center;
+}
+
+.spectra-adoption .sa-zoom-monthly-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+/* ============================================================
+   Zoom Tab — AI Adoption section
+   ============================================================ */
+
+.spectra-adoption .sa-zoom-ai-section {
+  margin: 0 0 22px;
+}
+
+.spectra-adoption .sa-zoom-ai-heading {
+  margin-bottom: 12px;
+}
+
+.spectra-adoption .sa-zoom-ai-heading h2 {
+  font-size: 23px;
+}
+
+.spectra-adoption .sa-zoom-ai-heading p {
+  max-width: 680px;
+}
+
+.spectra-adoption .sa-zoom-ai-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.spectra-adoption .sa-zoom-ai-visuals {
+  display: grid;
+  grid-template-columns: 2.05fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.spectra-adoption .sa-zoom-ai-features-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  font-size: 10px;
+  color: var(--color-text-label);
+  margin: 20px 0 8px;
+}
+
+.spectra-adoption .sa-zoom-ai-features-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.spectra-adoption .sa-zoom-ai-features-legend i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+
+/* ============================================================
+   Zoom Tab — Participant Experience section
+   ============================================================ */
+
+.spectra-adoption .sa-zoom-experience-section {
+  margin-bottom: 22px;
+}
+
+.spectra-adoption .sa-zoom-experience-heading {
+  margin-bottom: 12px;
+}
+
+.spectra-adoption .sa-zoom-experience-heading h2 {
+  font-size: 23px;
+}
+
+.spectra-adoption .sa-zoom-experience-panel {
+  width: 67%;
+}
+
+
+/* ============================================================
+   Zoom Tab — Shared SVG chart container
+   ============================================================ */
+
+.spectra-adoption .sa-zoom-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+/* Chart Tooltip (hover card) */
+
+.spectra-adoption .sa-chart-hover-wrap {
+  position: relative;
+  cursor: crosshair;
+}
+
+.spectra-adoption .sa-chart-tooltip {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-dropdown);
+  padding: 10px 14px;
+  min-width: 170px;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+}
+
+.spectra-adoption .sa-chart-tooltip-heading {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+
+.spectra-adoption .sa-chart-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.spectra-adoption .sa-chart-tooltip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.spectra-adoption .sa-chart-tooltip-label {
+  color: var(--color-text-secondary);
+  flex: 1;
+}
+
+.spectra-adoption .sa-chart-tooltip-value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  text-align: right;
+}
+
+
+/* ============================================================
+   Zoom Tab — Period mode select
+   ============================================================ */
+
+.spectra-adoption .sa-period-mode-select {
+  width: 92px;
+  margin-right: 8px;
+}
+
+
+/* ============================================================
+   User Avatar & Dropdown Menu
+   ============================================================ */
+
+.spectra-adoption .sa-user-menu-wrap {
+  position: relative;
+}
+
+.spectra-adoption .sa-user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-brand-gradient-start), var(--color-brand-gradient-end));
+  color: var(--color-text-on-brand);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+
+.spectra-adoption .sa-user-avatar:hover {
+  opacity: 0.9;
+  box-shadow: 0 0 0 3px var(--color-bg-brand-lighter);
+}
+
+.spectra-adoption .sa-user-avatar-loading {
+  background: var(--color-border-default);
+  animation: sa-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes sa-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.spectra-adoption .sa-user-avatar-lg {
+  width: 44px;
+  height: 44px;
+  font-size: 19px;
+  cursor: default;
+}
+
+.spectra-adoption .sa-user-avatar-lg:hover {
+  opacity: 1;
+  box-shadow: none;
+}
+
+.spectra-adoption .sa-user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  box-shadow: var(--shadow-dropdown);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.spectra-adoption .sa-user-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-bg-brand-light);
+  border-bottom: 1px solid var(--color-border-brand-subtle);
+}
+
+.spectra-adoption .sa-user-dropdown-identity {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spectra-adoption .sa-user-dropdown-identity strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spectra-adoption .sa-user-dropdown-email {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spectra-adoption .sa-user-dropdown-details {
+  padding: 12px 16px;
+}
+
+.spectra-adoption .sa-user-dropdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.spectra-adoption .sa-user-dropdown-row + .sa-user-dropdown-row {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.spectra-adoption .sa-user-dropdown-label {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.spectra-adoption .sa-user-dropdown-value {
+  font-size: 12px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  text-align: right;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spectra-adoption .sa-user-role-badge {
+  background: var(--color-bg-brand-lighter);
+  color: var(--color-brand-accent-dark);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.spectra-adoption .sa-user-dropdown-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.spectra-adoption .sa-user-signout {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 5px;
+  background: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.spectra-adoption .sa-user-signout:hover {
+  background: var(--color-bg-surface-alt);
+  color: var(--color-text-primary);
+}
+
+
+/* Responsive — Narrow Desktop */
+
+@media (max-width: 1150px) {
+  .spectra-adoption .sa-aside {
+    width: 195px;
+    padding: 28px 10px;
+  }
+
+  .spectra-adoption .sa-main {
+    width: calc(100% - 195px);
+    padding: 25px;
+  }
+
+  .spectra-adoption .sa-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .spectra-adoption .sa-scope {
+    display: none;
+  }
+
+  .spectra-adoption .sa-filters {
+    gap: 12px;
+  }
+
+  .spectra-adoption .sa-charts {
+    grid-template-columns: 1.7fr 1fr;
+  }
+
+  .spectra-adoption .sa-agency-wrap {
+    min-width: 220px;
+  }
+
+  .spectra-adoption .sa-zoom-ai-visuals {
+    grid-template-columns: 1.7fr 1fr;
+  }
+
+  .spectra-adoption .sa-zoom-ai-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .spectra-adoption .sa-zoom-experience-panel {
+    width: 100%;
+  }
+}
+
+
+/* Responsive — Mobile */
+
+@media (max-width: 800px) {
+  .spectra-adoption .sa-header {
+    padding: 0 20px;
+    height: 75px;
+  }
+
+  .spectra-adoption .sa-header-note {
+    display: none;
+  }
+
+  .spectra-adoption .sa-account-controls {
+    padding-left: 12px;
+    border: 0;
+  }
+
+  .spectra-adoption .sa-spectra-mark {
+    width: 36px;
+    height: 36px;
+    font-size: 26px;
+  }
+
+  .spectra-adoption .sa-spectra-name {
+    font-size: 23px;
+  }
+
+  .spectra-adoption .sa-brand-tagline {
+    font-size: 9px;
+  }
+
+  .spectra-adoption .sa-shell {
+    display: block;
+  }
+
+  .spectra-adoption .sa-aside {
+    width: 100%;
+    min-height: 0;
+    padding: 8px;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  .spectra-adoption .sa-nav-label,
+  .spectra-adoption .sa-sidebar-bottom {
+    display: none;
+  }
+
+  .spectra-adoption .sa-nav {
+    display: flex;
+    overflow: auto;
+  }
+
+  .spectra-adoption .sa-nav button {
+    width: auto;
+    white-space: nowrap;
+    padding: 10px;
+    font-size: 11px;
+  }
+
+  .spectra-adoption .sa-nav-label.sa-products {
+    display: none;
+  }
+
+  .spectra-adoption .sa-main {
+    width: 100%;
+    padding: 23px 18px;
+  }
+
+  .spectra-adoption .sa-title {
+    font-size: 29px;
+  }
+
+  .spectra-adoption .sa-filters {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .spectra-adoption .sa-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .spectra-adoption .sa-kpis {
+    gap: 10px;
+  }
+
+  .spectra-adoption .sa-kpi {
+    padding: 14px;
+  }
+
+  .spectra-adoption .sa-kpi-value {
+    font-size: 27px;
+  }
+
+  .spectra-adoption .sa-legend {
+    flex-wrap: wrap;
+  }
+
+  .spectra-adoption .sa-comparison .sa-panel-head {
+    flex-wrap: wrap;
+  }
+
+  .spectra-adoption .sa-prototype {
+    font-size: 9px;
+  }
+
+  .spectra-adoption .sa-zoom-ai-visuals {
+    grid-template-columns: 1fr;
+  }
+
+  .spectra-adoption .sa-zoom-ai-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .spectra-adoption .sa-zoom-experience-panel {
+    width: 100%;
+  }
+}

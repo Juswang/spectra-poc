@@ -1,3 +1,4 @@
+// NextAuth type augmentation: adds role, agencyCodes, agencyNames to Session and JWT.
 import "next-auth";
 import "next-auth/jwt";
 

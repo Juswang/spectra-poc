@@ -52,3 +52,14 @@ next-env.d.ts
 
 # Local guides (not for repo)
 SPECTRA-CODE-GUIDE.md
+POLLER-GUIDE.md
+IMPLEMENTATION-GUIDE.md
+ONBOARDING-GUIDE.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+poller/.venv/
+poller/.env

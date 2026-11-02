@@ -1,17 +1,4 @@
-// =================================================================
-// src/lib/databricks.ts
-// =================================================================
-// This module handles all communication with Databricks.
-// It provides a function to execute SQL queries against
-// Databricks using the SQL Statement Execution API.
-//
-// IMPORTANT: This file runs on the Next.js SERVER only.
-// It is never sent to the browser.
-// The Databricks token is only accessible here.
-// =================================================================
-
-// --- Configuration ---
-// Read connection details from environment variables.
+// Databricks SQL Statement Execution API client using raw fetch.
 // These are set in .env.local and are only available on the server.
 
 const DATABRICKS_HOST = process.env.DATABRICKS_HOST;

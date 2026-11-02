@@ -1,13 +1,4 @@
-// =================================================================
-// src/app/admin/page.tsx
-// =================================================================
-// The admin page.
-// Reads from postgres northflank db.
-//
-// "use client" is required because this component uses React hooks
-// (useServiceData, useSession) which only work in client components.
-// =================================================================
-
+// Admin dashboard: user management, service monitoring (client component).
 "use client";
 
 import { useSession } from "next-auth/react";

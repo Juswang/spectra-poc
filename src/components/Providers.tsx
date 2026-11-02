@@ -1,3 +1,4 @@
+// Session provider wrapper — gives all child components access to NextAuth session.
 "use client";
 
 import {SessionProvider} from "next-auth/react";

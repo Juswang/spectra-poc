@@ -1,3 +1,4 @@
+// Landing page: redirects authenticated users to /dashboard, shows sign-in for guests.
 "use client";
 
 import { useSession, signIn } from "next-auth/react";

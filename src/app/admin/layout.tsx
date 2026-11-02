@@ -1,3 +1,4 @@
+// Admin layout: server-side ADMIN role guard, redirects non-admins.
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 

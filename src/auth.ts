@@ -1,7 +1,9 @@
+// NextAuth v5 config: Microsoft Entra ID + GovAuth providers, JWT strategy, per-agency role resolution.
 import NextAuth from "next-auth";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/prisma";
+import { getEffectiveRole } from "@/lib/auth-utils";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   // Tells NextAuth to save users to our PostgreSQL database.
@@ -47,18 +49,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // Events fire once for specific lifecycle moments.
   // createUser only fires when a brand-new User row is created (first login).
   events: {
-    async createUser({ user }) {
-      // Find the VIEWER role in the database
-      const viewerRole = await prisma.role.findUnique({
-        where: { name: "VIEWER" },
-      });
-      // Assign it to the newly created user
-      if (viewerRole && user.id) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { roleId: viewerRole.id },
-        });
-      }
+    async createUser() {
+      // With per-agency roles, new users start with no agency assignments.
+      // An admin assigns them to agencies (each with a role) via the admin panel.
+      // Until then, the JWT callback defaults their effective role to VIEWER.
     },
   },
 
@@ -72,19 +66,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     // not on every request. If an admin changes your role, you pick it
     // up on your next sign-in.
     async jwt({ token, user, trigger }) {
-      if (trigger === "signIn" || trigger === "signUp") {
+      const needsRefresh =
+        trigger === "signIn" ||
+        trigger === "signUp" ||
+        !token.role ||
+        !token.agencyCodes;
+      if (needsRefresh) {
         const dbUser = await prisma.user.findUnique({
           where: { id: user?.id ?? token.sub! },
           include: {
-            role: true,
-            agencies: { include: { agency: true } },
+            agencies: { include: { agency: true, role: true } },
           },
         });
-        token.role = dbUser?.role?.name ?? "VIEWER";
-        token.agencyCodes =
-          dbUser?.agencies.map((ua) => ua.agency.code) ?? [];
-        token.agencyNames =
-          dbUser?.agencies.map((ua) => ua.agency.name) ?? [];
+        const assignments = dbUser?.agencies ?? [];
+        token.role = getEffectiveRole(assignments.map((ua) => ua.role.name));
+        token.agencyCodes = assignments.map((ua) => ua.agency.code);
+        token.agencyNames = assignments.map((ua) => ua.agency.name);
       }
       return token;
     },
@@ -108,8 +105,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     authorized: async ({ auth: session, request }) => {
       const isProtected = request.nextUrl.pathname.startsWith("/dashboard");
       const isAdmin = request.nextUrl.pathname.startsWith("/admin");
-      if (isProtected && !session) return false;
-      if (isAdmin && !session) return false;
+      if ((isProtected || isAdmin) && !session) return false;
       return true;
     },
   },

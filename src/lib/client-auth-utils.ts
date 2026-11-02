@@ -1,3 +1,4 @@
+// Client-side useRole hook — reads role and agency info from the NextAuth session.
 "use client";
 
 import { useSession } from "next-auth/react";
@@ -13,18 +14,4 @@ export function useRole() {
     agencyCodes: session?.user?.agencyCodes ?? [],
     agencyNames: session?.user?.agencyNames ?? [],
   };
-}
-
-export function RoleGate({
-  allowedRoles,
-  children,
-  fallback = null,
-}: {
-  allowedRoles: string[];
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
-}) {
-  const { role } = useRole();
-  if (!allowedRoles.includes(role)) return fallback;
-  return children;
 }

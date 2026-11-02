@@ -1,68 +1,45 @@
+// PATCH /api/admin/users/:id — update user agency/role assignments (ADMIN only).
 import { NextResponse } from "next/server";
-import { requireRole, AuthError } from "@/lib/auth-utils";
+import { requireRole, getEffectiveRole } from "@/lib/auth-utils";
+import { withErrorHandling } from "@/lib/api-utils";
 import prisma from "@/lib/prisma";
-import { NextRequest } from "next/server";
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    await requireRole("ADMIN");
-    const { id } = await params;
-    const body = await request.json();
+export const PATCH = withErrorHandling(async (request) => {
+  await requireRole("ADMIN");
+  const url = new URL(request.url);
+  const id = url.pathname.split("/").pop()!;
+  const body = await request.json();
 
-    const updateData: Record<string, unknown> = {};
-
-    if (body.roleId !== undefined) {
-      const role = await prisma.role.findUnique({ where: { id: body.roleId } });
-      if (!role) {
-        return NextResponse.json({ error: "Role not found" }, { status: 400 });
-      }
-      updateData.roleId = body.roleId;
+  if (body.agencies !== undefined) {
+    await prisma.userAgency.deleteMany({ where: { userId: id } });
+    if (body.agencies.length > 0) {
+      await prisma.userAgency.createMany({
+        data: body.agencies.map((a: { agencyId: string; roleId: string }) => ({
+          userId: id,
+          agencyId: a.agencyId,
+          roleId: a.roleId,
+        })),
+      });
     }
-
-    if (body.agencyIds !== undefined) {
-      await prisma.userAgency.deleteMany({ where: { userId: id } });
-      if (body.agencyIds.length > 0) {
-        await prisma.userAgency.createMany({
-          data: body.agencyIds.map((agencyId: string) => ({
-            userId: id,
-            agencyId,
-          })),
-        });
-      }
-    }
-
-    if (Object.keys(updateData).length > 0) {
-      await prisma.user.update({ where: { id }, data: updateData });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id },
-      include: {
-        role: true,
-        agencies: { include: { agency: true } },
-      },
-    });
-
-    return NextResponse.json({
-      id: user!.id,
-      name: user!.name,
-      email: user!.email,
-      role: user!.role?.name ?? null,
-      roleId: user!.roleId,
-      agencies: user!.agencies.map((ua) => ({
-        id: ua.agency.id,
-        name: ua.agency.name,
-        code: ua.agency.code,
-      })),
-    });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
-    }
-    console.error("Error updating user:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+
+  const user = await prisma.user.findUnique({
+    where: { id },
+    include: {
+      agencies: { include: { agency: true, role: true } },
+    },
+  });
+
+  return NextResponse.json({
+    id: user!.id,
+    name: user!.name,
+    email: user!.email,
+    role: getEffectiveRole(user!.agencies.map((ua) => ua.role.name)),
+    agencies: user!.agencies.map((ua) => ({
+      id: ua.agency.id,
+      name: ua.agency.name,
+      code: ua.agency.code,
+      role: ua.role.name,
+    })),
+  });
+});

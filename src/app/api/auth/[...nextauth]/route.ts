@@ -1,3 +1,4 @@
+// NextAuth catch-all route handler with GovAuth issuer workaround.
 import { handlers } from "@/auth";
 import { NextRequest } from "next/server";
 

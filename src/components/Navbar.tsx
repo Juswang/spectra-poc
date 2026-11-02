@@ -1,3 +1,4 @@
+// Top navigation bar: sign-in/out, role badge, admin link for ADMIN users.
 "use client";
 
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -67,13 +68,14 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <button
+              null
+          /*    <button
                 onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/dashboard" })}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm
                            hover:bg-blue-700 transition-colors"
               >
                 Sign In
-              </button>
+              </button>*/
             )}
           </div>
         </div>

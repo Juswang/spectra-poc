@@ -1,3 +1,4 @@
+// Root layout: Inter font, Providers wrapper, Navbar, global styles.
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";

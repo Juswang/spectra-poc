@@ -1,3 +1,4 @@
+// Animated loading spinner for data fetch states.
 // =================================================================
 // src/components/LoadingSpinner.tsx
 // =================================================================

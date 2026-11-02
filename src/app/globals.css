@@ -1,3 +1,4 @@
+/* Global styles: Tailwind imports, CSS custom properties for light/dark themes. */
 @import "tailwindcss";
 
 :root {
